@@ -2,6 +2,7 @@ package cn.itcast.mq.listener;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
@@ -24,5 +25,14 @@ public class SpringRabbitListener {
     ))
     public void listenDlQueue(String msg){
         log.info("接收到 dl.queue的延迟消息：{}", msg);
+    }
+
+    //基于注解实现延迟队列DelayExchange类型交换机
+    @RabbitListener(bindings = @QueueBinding(
+            value = @Queue(name = "delay.queue",durable = "true"),
+            exchange = @Exchange(name = "delay.direct",type = ExchangeTypes.DIRECT,delayed = "true"),
+            key = "delay"))
+    public void listenDelayQueue(String msg){
+        log.info("接收到 delay.queue的延迟消息：{}", msg);
     }
 }

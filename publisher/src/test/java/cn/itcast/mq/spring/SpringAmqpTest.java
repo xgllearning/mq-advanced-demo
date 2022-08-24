@@ -64,4 +64,20 @@ public class SpringAmqpTest {
         rabbitTemplate.convertAndSend("ttl.direct", "ttl", message, correlationData);
         log.debug("发送消息成功");
     }
+
+
+    //发送延迟消息，基于注解的形式实现，DelayExchange类型交换机
+    @Test
+    public void testSendDelayMsg() {
+        // 创建消息
+        Message message = MessageBuilder
+                .withBody("hello, ttl message".getBytes(StandardCharsets.UTF_8))
+                .setHeader("x-delay",5000)
+                .build();
+        // 消息ID，需要封装到CorrelationData中
+        CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
+        // 发送消息
+        rabbitTemplate.convertAndSend("delay.direct", "delay", message, correlationData);
+        log.debug("发送消息成功");
+    }
 }
