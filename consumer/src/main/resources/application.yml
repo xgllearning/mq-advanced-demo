@@ -17,3 +17,10 @@ spring:
 #manual：手动ack，需要在业务代码结束后，调用api发送ack。
 #auto：自动ack，由spring监测listener代码是否出现异常，没有异常则返回ack；抛出异常则返回nack
 #none：关闭ack，MQ假定消费者获取消息后会成功处理，因此消息投递后立即被删除
+#失败重试机制，默认会丢弃消息
+        retry:
+          enabled: true # 开启消费者失败重试
+          initial-interval: 1000 # 初识的失败等待时长为1秒
+          multiplier: 1 # 失败的等待时长倍数，下次等待时长 = multiplier * last-interval
+          max-attempts: 3 # 最大重试次数
+          stateless: true # true无状态；false有状态。如果业务中包含事务，这里改为false
