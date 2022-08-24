@@ -3,12 +3,15 @@ package cn.itcast.mq.spring;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 @Slf4j
@@ -45,5 +48,20 @@ public class SpringAmqpTest {
 
         // 休眠一会儿，等待ack回执
         Thread.sleep(2000);
+    }
+
+    //发送延迟消息到正常交换机，再到死信交换机
+    @Test
+    public void testTTLMsg() {
+        // 创建消息
+        Message message = MessageBuilder
+                .withBody("hello, ttl message".getBytes(StandardCharsets.UTF_8))
+                .setExpiration("5000")
+                .build();
+        // 消息ID，需要封装到CorrelationData中
+        CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
+        // 发送消息
+        rabbitTemplate.convertAndSend("ttl.direct", "ttl", message, correlationData);
+        log.debug("发送消息成功");
     }
 }
