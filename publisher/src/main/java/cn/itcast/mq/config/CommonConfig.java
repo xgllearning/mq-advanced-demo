@@ -30,7 +30,7 @@ public class CommonConfig implements ApplicationContextAware {
         // 设置ReturnCallback
         rabbitTemplate.setReturnCallback((message, replyCode, replyText, exchange, routingKey) -> {
             // 投递失败，记录日志
-            log.info("消息发送失败，应答码{}，原因{}，交换机{}，路由键{},消息{}",
+            log.info("消息到达交换机，发到队列发送失败，应答码{}，原因{}，交换机{}，路由键{},消息{}",
                     replyCode, replyText, exchange, routingKey, message.toString());
             // 如果有业务需要，可以重发消息
         });
