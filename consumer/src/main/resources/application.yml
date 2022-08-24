@@ -13,3 +13,7 @@ spring:
     listener:
       simple:
         prefetch: 1
+        acknowledge-mode: auto # 而SpringAMQP则允许配置三种确认模式：
+#manual：手动ack，需要在业务代码结束后，调用api发送ack。
+#auto：自动ack，由spring监测listener代码是否出现异常，没有异常则返回ack；抛出异常则返回nack
+#none：关闭ack，MQ假定消费者获取消息后会成功处理，因此消息投递后立即被删除
